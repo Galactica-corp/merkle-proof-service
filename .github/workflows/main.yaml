@@ -9,13 +9,21 @@ on:
 
 jobs:
   deploy:
+    strategy:
+      matrix:
+        # ./config/merkle-{{ number }}.yaml
+        chain:
+          - "41238"
+          - "9302"
     runs-on: runtime
     steps:
       - uses: actions/checkout@main
       - name: Build
         run: |
-          make build-linux install DB_BACKEND=pebbledb
-          cp -f /home/deploy/.galacticad-merkle/merkle-41238.yaml{,old} && cp -f ./config/merkle-41238.yaml /home/deploy/.galacticad-merkle/merkle-41238.yaml
-          systemctl --user restart gala-merkle.service
+          make build-linux install DB_BACKEND=pebbledb BINARY_NAME=galacticad-merkle-${{ matrix.chain }}
+          mkdir -p ${HOME}/galacticad-merkle-${{ matrix.chain }}
+          cp -f ./config/merkle-${{ matrix.chain }}.yaml ${HOME}/galacticad-merkle-${{ matrix.chain }}/merkle-${{ matrix.chain }}.yaml
+          systemctl --user enable gala-merkle@${{ matrix.chain }}
+          systemctl --user restart gala-merkle@${{ matrix.chain }}
       - uses: eviden-actions/clean-self-hosted-runner@v1
         if: ${{ always() }}
