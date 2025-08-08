@@ -1,6 +1,6 @@
 log_level: debug
 
-evm_rpc: https://galactica-cassiopeia.g.alchemy.com/public
+evm_rpc: wss://galactica-cassiopeia.g.alchemy.com/public
 
 db_backend: pebbledb
 
@@ -12,7 +12,7 @@ grpc_gateway:
 
 indexer:
   # The indexer mode can be either "poll" or "ws"
-  mode: poll
+  mode: ws
 
   # The polling interval for the indexer when indexer mode is "poll"
   polling_interval: 1s
