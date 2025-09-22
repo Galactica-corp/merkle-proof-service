@@ -28,6 +28,7 @@ indexer:
 
 # You can specify multiple contracts to watch
 zk_certificate_registry:
+  - 0xfe35ef5d1e8488a6b06bd35434613917e7d9760f # kyc (with processing queue)
   - 0xa922eE97D068fd95d5692c357698F6Bf2C6fd8cE # kyc
   - 0xeE8Dd398919c2B11ac346F9f8CaF17ab9735950B # dex
   - 0x262880b4a51201c7d9e0B4457948f46F6f514DAf # gip6
