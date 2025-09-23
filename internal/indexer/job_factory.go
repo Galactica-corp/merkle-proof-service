@@ -84,6 +84,14 @@ func (f *JobFactory) Produce(ctx context.Context, jobDescriptor JobDescriptor) (
 
 		return NewZkCertificateRegistryJob(jobDescriptor, f.jobUpdater, f.batchCreator, registry, f.logger), nil
 
+	case ContractZkCertificateRegistryV2:
+		registry, err := f.registryService.ZKCertificateRegistry(ctx, jobDescriptor.Address)
+		if err != nil {
+			return nil, fmt.Errorf("get zk certificate registry v2 for address %s: %w", jobDescriptor.Address, err)
+		}
+
+		return NewZkCertificateRegistryV2Job(jobDescriptor, f.jobUpdater, f.batchCreator, registry, f.logger), nil
+
 	default:
 		return nil, fmt.Errorf("unknown contract: %s", jobDescriptor.Contract)
 	}

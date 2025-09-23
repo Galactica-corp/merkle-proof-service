@@ -54,7 +54,8 @@ const (
 	indexerSinkChannelSizeFlag   = "indexer.sink_channel_size"
 	indexerSinkProgressTickFlag  = "indexer.sink_progress_tick"
 
-	zkCertificateRegistryViper = "zk_certificate_registry"
+	zkCertificateRegistryViper   = "zk_certificate_registry"
+	zkCertificateRegistryV2Viper = "zk_certificate_registry_v2"
 
 	defaultEvmRpc = "ws://localhost:8546"
 
@@ -94,13 +95,19 @@ func CreateStartCmd() *cobra.Command {
 				return fmt.Errorf("zk certificate registry: %w", err)
 			}
 
+			zkCertificateRegistryV2, err := getZkCertificateRegistryV2()
+			if err != nil {
+				return fmt.Errorf("zk certificate registry v2: %w", err)
+			}
+
 			appConfig := pkgindexer.ApplicationConfig{
-				EvmRpc:                evmRpc,
-				DbPath:                dbPath,
-				DbBackend:             dbBackend,
-				ZkCertificateRegistry: zkCertificateRegistry,
-				QueryServer:           getQueryServerConfig(),
-				IndexerConfig:         getIndexConfig(),
+				EvmRpc:                  evmRpc,
+				DbPath:                  dbPath,
+				DbBackend:               dbBackend,
+				ZkCertificateRegistry:   zkCertificateRegistry,
+				ZkCertificateRegistryV2: zkCertificateRegistryV2,
+				QueryServer:             getQueryServerConfig(),
+				IndexerConfig:           getIndexConfig(),
 			}
 
 			// check if the indexer mode are compatible with the EVM RPC endpoint
@@ -152,6 +159,7 @@ func initFlags(indexerStartCmd *cobra.Command) {
 	indexerStartCmd.Flags().Uint(indexerSinkChannelSizeFlag, indexer.SinkSize, "indexer sink channel buffer size for the 'ws' mode")
 	indexerStartCmd.Flags().Duration(indexerSinkProgressTickFlag, indexer.SinkProgressTick, "indexer sink progress tick duration for the 'ws' mode")
 	indexerStartCmd.Flags().StringSlice(zkCertificateRegistryViper, []string{}, "zk certificate registry contract addresses list")
+	indexerStartCmd.Flags().StringSlice(zkCertificateRegistryV2Viper, []string{}, "zk certificate registry v2 contract addresses list")
 
 	utils.MustBindPFlag(viper.GetViper(), evmRpcViper, indexerStartCmd.Flags().Lookup(evmRpcFlag))
 	utils.MustBindPFlag(viper.GetViper(), grpcAddressViper, indexerStartCmd.Flags().Lookup(grpcAddressFlag))
@@ -162,6 +170,7 @@ func initFlags(indexerStartCmd *cobra.Command) {
 	utils.MustBindPFlag(viper.GetViper(), indexerSinkChannelSizeFlag, indexerStartCmd.Flags().Lookup(indexerSinkChannelSizeFlag))
 	utils.MustBindPFlag(viper.GetViper(), indexerSinkProgressTickFlag, indexerStartCmd.Flags().Lookup(indexerSinkProgressTickFlag))
 	utils.MustBindPFlag(viper.GetViper(), zkCertificateRegistryViper, indexerStartCmd.Flags().Lookup(zkCertificateRegistryViper))
+	utils.MustBindPFlag(viper.GetViper(), zkCertificateRegistryV2Viper, indexerStartCmd.Flags().Lookup(zkCertificateRegistryV2Viper))
 
 	viper.MustBindEnv(evmRpcViper, evmRpcEnv)
 	viper.MustBindEnv(grpcAddressViper, grpcAddressEnv)
@@ -170,6 +179,24 @@ func initFlags(indexerStartCmd *cobra.Command) {
 
 func getZkCertificateRegistry() ([]common.Address, error) {
 	addresses := viper.GetStringSlice(zkCertificateRegistryViper)
+	if len(addresses) == 0 {
+		return nil, nil
+	}
+
+	var contractAddresses []common.Address
+	for _, address := range addresses {
+		if !common.IsHexAddress(address) {
+			return nil, fmt.Errorf("invalid address: %s", address)
+		}
+
+		contractAddresses = append(contractAddresses, common.HexToAddress(address))
+	}
+
+	return contractAddresses, nil
+}
+
+func getZkCertificateRegistryV2() ([]common.Address, error) {
+	addresses := viper.GetStringSlice(zkCertificateRegistryV2Viper)
 	if len(addresses) == 0 {
 		return nil, nil
 	}
