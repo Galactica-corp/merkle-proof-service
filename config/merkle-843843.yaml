@@ -39,3 +39,9 @@ zk_certificate_registry:
 # V2 contracts (queue-based processing)
 zk_certificate_registry_v2:
   - 0xFe35EF5D1E8488a6b06BD35434613917e7d9760f # kyc
+  - 0x0A4aEe7f225A8d25188D2Ef50bb74Fa13daa19Fb # data
+  - 0xf0c1F5e01c835cFE6348e8010314f06d2201c241 # dex
+  - 0x09e51ddFfA18B6466F6B4F09e00977Db5A8478E6 # gip6
+  - 0x4a4F5FeB7e5D0E2051B885D139E1adEE93052ec1 # gip7
+  - 0x81F8f62A667B941E99A6F873833b389F63dd8C2F # rey
+  - 0x325c958189b10d61db04042d12a33875B84E4fdF # twitter
