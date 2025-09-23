@@ -20,6 +20,9 @@ const (
 	ContractZkCertificateRegistry       Contract = 1
 	ContractZkCertificateRegistryString string   = "ZkCertificateRegistry"
 
+	ContractZkCertificateRegistryV2       Contract = 2
+	ContractZkCertificateRegistryV2String string   = "ZkCertificateRegistryV2"
+
 	ContractTypeLength = 1
 )
 
@@ -37,6 +40,8 @@ func (s Contract) String() string {
 	switch s {
 	case ContractZkCertificateRegistry:
 		return ContractZkCertificateRegistryString
+	case ContractZkCertificateRegistryV2:
+		return ContractZkCertificateRegistryV2String
 	default:
 		return "unknown"
 	}
@@ -46,6 +51,8 @@ func (s *Contract) UnmarshalText(text []byte) error {
 	switch string(text) {
 	case ContractZkCertificateRegistryString:
 		*s = ContractZkCertificateRegistry
+	case ContractZkCertificateRegistryV2String:
+		*s = ContractZkCertificateRegistryV2
 	default:
 		*s = 0
 	}

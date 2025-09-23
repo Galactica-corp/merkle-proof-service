@@ -26,7 +26,7 @@ indexer:
   # Duration to log the progress of the indexer when indexer mode is "ws"
   sink_progress_tick: 10s
 
-# You can specify multiple contracts to watch
+# V1 contracts (direct add/revoke)
 zk_certificate_registry:
   - 0xa922eE97D068fd95d5692c357698F6Bf2C6fd8cE # kyc
   - 0xeE8Dd398919c2B11ac346F9f8CaF17ab9735950B # dex
@@ -35,3 +35,7 @@ zk_certificate_registry:
   - 0x62008aaa3724A30AA72A1a7A78e9005375dBf039 # rey
   - 0x630e2aDAEE1136F14E4bA7130dB6845D4cDA0b4E # data
   - 0x332883EfB2aC47AD762d0ee1ef998507E20B9774 # twitter
+
+# V2 contracts (queue-based processing)
+zk_certificate_registry_v2:
+  - 0xFe35EF5D1E8488a6b06BD35434613917e7d9760f # kyc

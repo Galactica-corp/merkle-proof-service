@@ -69,6 +69,9 @@ type (
 		// Jobs is a list of jobs that should be applied to the indexer
 		ZkCertificateRegistry []common.Address
 
+		// V2 contracts with queue-based processing
+		ZkCertificateRegistryV2 []common.Address
+
 		// QueryServer is the configuration for the query server
 		QueryServer QueryServerConfig
 
@@ -189,10 +192,21 @@ func (app *Application) Init(ctx context.Context) error {
 	app.registryService = zkregistry.InitializeService(app.kvDB, app.ethereumClient)
 
 	// Apply all ZK Registry addresses to the index
-	app.jobs, err = app.configureZkCertificateRegistry(ctx, app.config.ZkCertificateRegistry)
+	app.jobs = []indexer.JobDescriptor{}
+
+	// Configure V1 contracts
+	v1Jobs, err := app.configureZkCertificateRegistry(ctx, app.config.ZkCertificateRegistry)
 	if err != nil {
 		return fmt.Errorf("configure zk certificate registry: %w", err)
 	}
+	app.jobs = append(app.jobs, v1Jobs...)
+
+	// Configure V2 contracts
+	v2Jobs, err := app.configureZkCertificateRegistryV2(ctx, app.config.ZkCertificateRegistryV2)
+	if err != nil {
+		return fmt.Errorf("configure zk certificate registry v2: %w", err)
+	}
+	app.jobs = append(app.jobs, v2Jobs...)
 
 	if len(app.jobs) == 0 {
 		return fmt.Errorf("no jobs to apply, please specify at least one zk certificate registry address")
@@ -298,6 +312,40 @@ func (app *Application) configureZkCertificateRegistry(ctx context.Context, addr
 		job := indexer.JobDescriptor{
 			Address:    address,
 			Contract:   indexer.ContractZkCertificateRegistry,
+			StartBlock: initBlockHeight,
+		}
+		jobs = append(jobs, job)
+	}
+
+	return jobs, nil
+}
+
+// configureZkCertificateRegistryV2 configures the ZK Certificate Registry V2 jobs
+func (app *Application) configureZkCertificateRegistryV2(ctx context.Context, addresses []common.Address) ([]indexer.JobDescriptor, error) {
+	jobs := make([]indexer.JobDescriptor, 0, len(addresses))
+	for _, address := range addresses {
+		registry, err := app.registryService.InitializeRegistry(ctx, address)
+		if err != nil {
+			return nil, fmt.Errorf("initialize registry v2 for address %s: %w", address.Hex(), err)
+		}
+
+		app.logger.Info(
+			"initialized registry v2",
+			"address", address.Hex(),
+			"tree_depth", registry.Metadata().Depth,
+			"description", registry.Metadata().Description,
+			"init_block_height", registry.Metadata().InitBlockHeight,
+		)
+
+		initBlockHeight := registry.Metadata().InitBlockHeight
+		if initBlockHeight > 0 {
+			// start from the previous block to avoid missing events in first initialization
+			initBlockHeight--
+		}
+
+		job := indexer.JobDescriptor{
+			Address:    address,
+			Contract:   indexer.ContractZkCertificateRegistryV2,
 			StartBlock: initBlockHeight,
 		}
 		jobs = append(jobs, job)
