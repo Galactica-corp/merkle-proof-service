@@ -262,21 +262,20 @@ func (job *ZkCertificateRegistryV2Job) JobDescriptor() JobDescriptor {
 
 // OnIndexerModeChange is called when the indexer mode changes.
 func (job *ZkCertificateRegistryV2Job) OnIndexerModeChange(mode Mode) {
-	// Nothing to do
-}
-
-// getParserLazy returns the parser for the job.
-func (job *ZkCertificateRegistryV2Job) getParserLazy() (*ZkCertificateRegistryV2.ZkCertificateRegistryFilterer, error) {
-	if job.parser != nil {
-		return job.parser, nil
+	progressTracker := job.registry.ProgressTracker()
+	if progressTracker == nil {
+		return
 	}
 
-	parser, err := ZkCertificateRegistryV2.NewZkCertificateRegistryFilterer(job.jobDescriptor.Address, nil)
-	if err != nil {
-		return nil, fmt.Errorf("new zk certificate registry v2 filterer: %w", err)
+	// Update progress tracker based on mode
+	switch mode {
+	case ModeWS, ModePoll:
+		if !progressTracker.IsOnHead() {
+			progressTracker.SetOnHead(true)
+		}
+	case ModeHistory:
+		if progressTracker.IsOnHead() {
+			progressTracker.SetOnHead(false)
+		}
 	}
-
-	job.parser = parser
-
-	return job.parser, nil
 }
