@@ -30,7 +30,8 @@ indexer:
 zk_certificate_registry: []
 # V2 contracts (queue-based processing)
 zk_certificate_registry_v2:
-  - 0xf98E14C33c573c26Bb14d8ca71e1c8756727Be53 # kyc
+  - address: 0xf98E14C33c573c26Bb14d8ca71e1c8756727Be53 # kyc
+    start_block: 25600
   - 0xdD826498E46cb32259FDfb446965Ea734c5E28b7 # data
   - 0x721aB287a601EB7D115000880CC219d7EEF93eAD # dex
   - 0xb1124b8736520F58b80107c3DBB9B6c6512ad43b # gip6

@@ -38,6 +38,11 @@ const (
 )
 
 type (
+	// ContractConfig represents a contract configuration with optional start block override
+	ContractConfig struct {
+		Address    common.Address
+		StartBlock *uint64 // nil means use contract's InitBlockHeight
+	}
 	ApplicationConfig struct {
 		// EvmRpc is the URL of the EVM RPC. Must be a WebSocket URL.
 		EvmRpc string
@@ -67,10 +72,10 @@ type (
 		DbBackend db.BackendType
 
 		// Jobs is a list of jobs that should be applied to the indexer
-		ZkCertificateRegistry []common.Address
+		ZkCertificateRegistry []ContractConfig
 
 		// V2 contracts with queue-based processing
-		ZkCertificateRegistryV2 []common.Address
+		ZkCertificateRegistryV2 []ContractConfig
 
 		// QueryServer is the configuration for the query server
 		QueryServer QueryServerConfig
@@ -287,32 +292,44 @@ func (app *Application) RunIndexer(ctx context.Context) error {
 }
 
 // configureZkCertificateRegistry configures the ZK Certificate Registry jobs
-func (app *Application) configureZkCertificateRegistry(ctx context.Context, addresses []common.Address) ([]indexer.JobDescriptor, error) {
-	jobs := make([]indexer.JobDescriptor, 0, len(addresses))
-	for _, address := range addresses {
-		registry, err := app.registryService.InitializeRegistry(ctx, address)
+func (app *Application) configureZkCertificateRegistry(ctx context.Context, configs []ContractConfig) ([]indexer.JobDescriptor, error) {
+	jobs := make([]indexer.JobDescriptor, 0, len(configs))
+	for _, config := range configs {
+		registry, err := app.registryService.InitializeRegistry(ctx, config.Address)
 		if err != nil {
-			return nil, fmt.Errorf("initialize registry for address %s: %w", address.Hex(), err)
+			return nil, fmt.Errorf("initialize registry for address %s: %w", config.Address.Hex(), err)
 		}
 
 		app.logger.Info(
 			"initialized registry",
-			"address", address.Hex(),
+			"address", config.Address.Hex(),
 			"tree_depth", registry.Metadata().Depth,
 			"description", registry.Metadata().Description,
 			"init_block_height", registry.Metadata().InitBlockHeight,
 		)
 
-		initBlockHeight := registry.Metadata().InitBlockHeight
-		if initBlockHeight > 0 {
-			// start from the previous block to avoid missing events in first initialization
-			initBlockHeight--
+		// Use override start block if provided, otherwise use contract's InitBlockHeight
+		var startBlock uint64
+		if config.StartBlock != nil {
+			startBlock = *config.StartBlock
+			app.logger.Info(
+				"using override start block",
+				"address", config.Address.Hex(),
+				"override_block", startBlock,
+				"contract_init_block", registry.Metadata().InitBlockHeight,
+			)
+		} else {
+			startBlock = registry.Metadata().InitBlockHeight
+			if startBlock > 0 {
+				// start from the previous block to avoid missing events in first initialization
+				startBlock--
+			}
 		}
 
 		job := indexer.JobDescriptor{
-			Address:    address,
+			Address:    config.Address,
 			Contract:   indexer.ContractZkCertificateRegistry,
-			StartBlock: initBlockHeight,
+			StartBlock: startBlock,
 		}
 		jobs = append(jobs, job)
 	}
@@ -321,32 +338,44 @@ func (app *Application) configureZkCertificateRegistry(ctx context.Context, addr
 }
 
 // configureZkCertificateRegistryV2 configures the ZK Certificate Registry V2 jobs
-func (app *Application) configureZkCertificateRegistryV2(ctx context.Context, addresses []common.Address) ([]indexer.JobDescriptor, error) {
-	jobs := make([]indexer.JobDescriptor, 0, len(addresses))
-	for _, address := range addresses {
-		registry, err := app.registryService.InitializeRegistry(ctx, address)
+func (app *Application) configureZkCertificateRegistryV2(ctx context.Context, configs []ContractConfig) ([]indexer.JobDescriptor, error) {
+	jobs := make([]indexer.JobDescriptor, 0, len(configs))
+	for _, config := range configs {
+		registry, err := app.registryService.InitializeRegistry(ctx, config.Address)
 		if err != nil {
-			return nil, fmt.Errorf("initialize registry v2 for address %s: %w", address.Hex(), err)
+			return nil, fmt.Errorf("initialize registry v2 for address %s: %w", config.Address.Hex(), err)
 		}
 
 		app.logger.Info(
 			"initialized registry v2",
-			"address", address.Hex(),
+			"address", config.Address.Hex(),
 			"tree_depth", registry.Metadata().Depth,
 			"description", registry.Metadata().Description,
 			"init_block_height", registry.Metadata().InitBlockHeight,
 		)
 
-		initBlockHeight := registry.Metadata().InitBlockHeight
-		if initBlockHeight > 0 {
-			// start from the previous block to avoid missing events in first initialization
-			initBlockHeight--
+		// Use override start block if provided, otherwise use contract's InitBlockHeight
+		var startBlock uint64
+		if config.StartBlock != nil {
+			startBlock = *config.StartBlock
+			app.logger.Info(
+				"using override start block",
+				"address", config.Address.Hex(),
+				"override_block", startBlock,
+				"contract_init_block", registry.Metadata().InitBlockHeight,
+			)
+		} else {
+			startBlock = registry.Metadata().InitBlockHeight
+			if startBlock > 0 {
+				// start from the previous block to avoid missing events in first initialization
+				startBlock--
+			}
 		}
 
 		job := indexer.JobDescriptor{
-			Address:    address,
+			Address:    config.Address,
 			Contract:   indexer.ContractZkCertificateRegistryV2,
-			StartBlock: initBlockHeight,
+			StartBlock: startBlock,
 		}
 		jobs = append(jobs, job)
 	}
