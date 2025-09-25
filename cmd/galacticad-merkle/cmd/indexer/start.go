@@ -177,40 +177,62 @@ func initFlags(indexerStartCmd *cobra.Command) {
 	viper.MustBindEnv(grpcGatewayAddressViper, grpcGatewayAddressEnv)
 }
 
-func getZkCertificateRegistry() ([]common.Address, error) {
-	addresses := viper.GetStringSlice(zkCertificateRegistryViper)
-	if len(addresses) == 0 {
+func getZkCertificateRegistry() ([]pkgindexer.ContractConfig, error) {
+	rawConfigs := viper.Get(zkCertificateRegistryViper)
+	if rawConfigs == nil {
 		return nil, nil
 	}
 
-	var contractAddresses []common.Address
-	for _, address := range addresses {
-		if !common.IsHexAddress(address) {
-			return nil, fmt.Errorf("invalid address: %s", address)
+	// Handle the case where viper returns []string for backward compatibility
+	if addresses, ok := rawConfigs.([]string); ok {
+		var configs []pkgindexer.ContractConfig
+		for _, addr := range addresses {
+			if !common.IsHexAddress(addr) {
+				return nil, fmt.Errorf("invalid address: %s", addr)
+			}
+			configs = append(configs, pkgindexer.ContractConfig{
+				Address:    common.HexToAddress(addr),
+				StartBlock: nil,
+			})
 		}
-
-		contractAddresses = append(contractAddresses, common.HexToAddress(address))
+		return configs, nil
 	}
 
-	return contractAddresses, nil
+	// Handle the new format
+	if configSlice, ok := rawConfigs.([]interface{}); ok {
+		return parseContractConfigsToPackageType(configSlice)
+	}
+
+	return nil, fmt.Errorf("invalid configuration format for %s", zkCertificateRegistryViper)
 }
 
-func getZkCertificateRegistryV2() ([]common.Address, error) {
-	addresses := viper.GetStringSlice(zkCertificateRegistryV2Viper)
-	if len(addresses) == 0 {
+func getZkCertificateRegistryV2() ([]pkgindexer.ContractConfig, error) {
+	rawConfigs := viper.Get(zkCertificateRegistryV2Viper)
+	if rawConfigs == nil {
 		return nil, nil
 	}
 
-	var contractAddresses []common.Address
-	for _, address := range addresses {
-		if !common.IsHexAddress(address) {
-			return nil, fmt.Errorf("invalid address: %s", address)
+	// Handle the case where viper returns []string for backward compatibility
+	if addresses, ok := rawConfigs.([]string); ok {
+		var configs []pkgindexer.ContractConfig
+		for _, addr := range addresses {
+			if !common.IsHexAddress(addr) {
+				return nil, fmt.Errorf("invalid address: %s", addr)
+			}
+			configs = append(configs, pkgindexer.ContractConfig{
+				Address:    common.HexToAddress(addr),
+				StartBlock: nil,
+			})
 		}
-
-		contractAddresses = append(contractAddresses, common.HexToAddress(address))
+		return configs, nil
 	}
 
-	return contractAddresses, nil
+	// Handle the new format
+	if configSlice, ok := rawConfigs.([]any); ok {
+		return parseContractConfigsToPackageType(configSlice)
+	}
+
+	return nil, fmt.Errorf("invalid configuration format for %s", zkCertificateRegistryV2Viper)
 }
 
 func getQueryServerConfig() pkgindexer.QueryServerConfig {
