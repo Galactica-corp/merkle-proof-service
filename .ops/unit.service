@@ -4,9 +4,9 @@ After=default.target
 
 [Service]
 Type=simple
-ExecStartPre=/usr/bin/mkdir -p /home/deploy/galacticad-merkle-%i
-ExecStart=/home/deploy/go/bin/galacticad-merkle-%i indexer start --config /home/deploy/galacticad-merkle-%i/merkle-%i.yaml --home /home/deploy/galacticad-merkle-%i --grpc-gateway.address merkle-%i:8480  --grpc.address merkle-%i:50651
-WorkingDirectory=/home/deploy/galacticad-merkle-%i
+ExecStartPre=/usr/bin/mkdir -p %h/galacticad-merkle-%i
+ExecStart=%h/go/bin/galacticad-merkle-%i indexer start --config %h/galacticad-merkle-%i/merkle-%i.yaml --home %h/galacticad-merkle-%i --grpc-gateway.address merkle-%i:8480  --grpc.address merkle-%i:50651
+WorkingDirectory=%h/galacticad-merkle-%i
 Restart=always
 RestartSec=5
 RestartKillSignal=SIGTERM
