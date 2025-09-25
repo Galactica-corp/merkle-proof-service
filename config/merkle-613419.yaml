@@ -32,9 +32,15 @@ zk_certificate_registry: []
 zk_certificate_registry_v2:
   - address: 0xf98E14C33c573c26Bb14d8ca71e1c8756727Be53 # kyc
     start_block: 25600
-  - 0xdD826498E46cb32259FDfb446965Ea734c5E28b7 # data
-  - 0x721aB287a601EB7D115000880CC219d7EEF93eAD # dex
-  - 0xb1124b8736520F58b80107c3DBB9B6c6512ad43b # gip6
-  - 0xb8c2d372f98AC4083a4114490051f341291b656f # gip7
-  - 0xaEae442A652aE8752d8BDA84A2Ba47711671F408 # rey
-  - 0xa931b18407A970BD28c42c7B668A312A88aEfF5d # twitter
+  - address: 0xdD826498E46cb32259FDfb446965Ea734c5E28b7 # data
+    start_block: 25600
+  - address: 0x721aB287a601EB7D115000880CC219d7EEF93eAD # dex
+    start_block: 25600
+  - address: 0xb1124b8736520F58b80107c3DBB9B6c6512ad43b # gip6
+    start_block: 25600
+  - address: 0xb8c2d372f98AC4083a4114490051f341291b656f # gip7
+    start_block: 25600
+  - address: 0xaEae442A652aE8752d8BDA84A2Ba47711671F408 # rey
+    start_block: 25600
+  - address: 0xa931b18407A970BD28c42c7B668A312A88aEfF5d # twitter
+    start_block: 25600
