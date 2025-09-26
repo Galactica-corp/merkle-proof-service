@@ -30,17 +30,17 @@ indexer:
 zk_certificate_registry: []
 # V2 contracts (queue-based processing)
 zk_certificate_registry_v2:
-  - address: 0xf98E14C33c573c26Bb14d8ca71e1c8756727Be53 # kyc
-    start_block: 25600
-  - address: 0xdD826498E46cb32259FDfb446965Ea734c5E28b7 # data
-    start_block: 25600
-  - address: 0x721aB287a601EB7D115000880CC219d7EEF93eAD # dex
-    start_block: 25600
-  - address: 0xb1124b8736520F58b80107c3DBB9B6c6512ad43b # gip6
-    start_block: 25600
-  - address: 0xb8c2d372f98AC4083a4114490051f341291b656f # gip7
-    start_block: 25600
-  - address: 0xaEae442A652aE8752d8BDA84A2Ba47711671F408 # rey
-    start_block: 25600
-  - address: 0xa931b18407A970BD28c42c7B668A312A88aEfF5d # twitter
-    start_block: 25600
+  - address: 0x5fce9D01Fa2f65fF17C3678c7970b8986e9270e4 # kyc
+    start_block: 26000
+  - address: 0x7bBC71FF2b1e46B30d5C6Fa20C88DA8F1C41a5E7 # data
+    start_block: 26000
+  - address: 0x2E994DC599847c1dFf9E162164d2532ACe5CF920 # dex
+    start_block: 26000
+  - address: 0x0acd2c41496d821683F2a3449F73863D2e3734E6 # gip6
+    start_block: 26000
+  - address: 0x81c7e95065a84dF098eDB4790Bb965FB60b60a66 # gip7
+    start_block: 26000
+  - address: 0x1d1B46e0fBD39DD5C37F5f21002f48310F93b89F # rey
+    start_block: 26000
+  - address: 0xAEb3403CAecc610be3130C8d6c152F472677514f # twitter
+    start_block: 26000
