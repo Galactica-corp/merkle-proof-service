@@ -44,3 +44,6 @@ zk_certificate_registry_v2:
     start_block: 26000
   - address: 0xAEb3403CAecc610be3130C8d6c152F472677514f # twitter
     start_block: 26000
+  - address: 0xD868A54Adf8Be3A52E71ec9Fc700553cb6f209dC # gip8
+    start_block: 26000
+
