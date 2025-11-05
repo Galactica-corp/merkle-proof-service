@@ -60,7 +60,7 @@ Here are the available flags for the `start` command:
 And the global flags:
 
 - `--home string`: home directory to store data (default is $HOME/.galacticad-merkle)
-- `--config string`: config file (default is $HOME/.galacticad-merkle/merkle-41238.yaml)
+- `--config string`: config file (default is $HOME/.galacticad-merkle/merkle-613419.yaml)
 - `--db-backend string`: database backend, available options: `goleveldb` (default), `cleveldb`, `memdb`, `boltdb`, `rocksdb`, `badgerdb`, `pebbledb`
 - `--log-level string`: log level, available options: debug, info, error, none. Default is info
 
@@ -89,13 +89,13 @@ The service provides the following endpoints:
 
 ## Configuration
 
-The Merkle Proof Service can be configured using a YAML file. By default, the configuration file is located at `$HOME/.galacticad-merkle/merkle-41238.yaml`. The configuration file can be customized to specify the database backend, log level, and other parameters.
+The Merkle Proof Service can be configured using a YAML file. By default, the configuration file is located at `$HOME/.galacticad-merkle/merkle-613419.yaml`. The configuration file can be customized to specify the database backend, log level, and other parameters.
 
 Here is an example of the configuration file:
 
 ```yaml
 log_level: info
-evm_rpc: wss://evm-rpc-ws-andromeda.galactica.com
+evm_rpc: wss://galactica-mainnet.g.alchemy.com/public
 db_backend: pebbledb
 grpc:
   address: localhost:50651
@@ -114,14 +114,14 @@ zk_certificate_registry:
 The `zk_certificate_registry` field in the configuration file specifies the Ethereum contract addresses for the zk certificate registry. The Merkle Proof Service uses these contracts to fill the Merkle tree storage.
 The initial block number fetching from the smart contract.
 
-You can specify multiple contract addresses in the configuration file. 
+You can specify multiple contract addresses in the configuration file.
 
 ### Environment variables
 
 The Merkle Proof Service can be configured using environment variables. The following environment variables can be used to configure the service:
 
 - `MERKLE_HOME` - home directory to store data (default is `$HOME/.galacticad-merkle`)
-- `MERKLE_CONFIG` - config file (default is `$HOME/.galacticad-merkle/merkle-41238.yaml`)
+- `MERKLE_CONFIG` - config file (default is `$HOME/.galacticad-merkle/merkle-613419.yaml`)
 - `DB_BACKEND` - database backend, available options: `goleveldb` (default), `cleveldb`, `memdb`, `boltdb`, `rocksdb`, `badgerdb`, `pebbledb`
 - `EVM_RPC` - EVM RPC endpoint (default `ws://localhost:8546`)
 - `GRPC_ADDRESS` - gRPC server address (default `localhost:50651`)

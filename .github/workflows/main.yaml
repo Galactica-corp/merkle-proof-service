@@ -13,8 +13,6 @@ jobs:
       matrix:
         # ./config/merkle-{{ number }}.yaml
         chain:
-          - "41238"
-          - "9302"
           - "843843"
           - "613419"
     runs-on: runtime

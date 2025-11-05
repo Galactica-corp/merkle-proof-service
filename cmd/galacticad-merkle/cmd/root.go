@@ -55,7 +55,7 @@ const (
 	DefaultLogLevel = "info"
 
 	DefaultHomeSubDir     = ".galacticad-merkle"
-	DefaultConfigFileName = "merkle-41238.yaml"
+	DefaultConfigFileName = "merkle-613419.yaml"
 )
 
 type Config struct {
@@ -69,7 +69,7 @@ func createRootCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "galacticad-merkle",
 		Short: "Galactica Network merkle cli",
-		Long: `Galactica Network merkle cli. 
+		Long: `Galactica Network merkle cli.
 This is a CLI tool to interact with the Galactica Network merkle service.`,
 	}
 }
