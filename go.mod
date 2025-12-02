@@ -1,4 +1,4 @@
-module github.com/Galactica-corp/merkle-proof-service
+module github.com/galactica-corp/merkle-proof-service
 
 go 1.22.2
 
